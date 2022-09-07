@@ -59,7 +59,9 @@ plot_qq <- function(data, by = NULL, sampled_rows = nrow(data),
   }
   feature_names <- unique(dt2[["variable"]])
   ## Calculate number of pages
-  layout <- .getPageLayout(nrow, ncol, ncol(continuous))
+  nplots <- ncol(continuous)
+  if (!is.null(by) && by %in% names(continuous)) nplots <- nplots - 1
+  layout <- .getPageLayout(nrow, ncol, nplots)
   ## Create list of ggplot objects
   plot_list <- .lapply(
     parallel = parallel,
