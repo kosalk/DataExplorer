@@ -94,6 +94,7 @@ create_report <- function(data,
                           y = NULL,
                           config = configure_report(),
                           report_title = "Data Profiling Report",
+                          browse = TRUE,
                           ...) {
   ## Check if input is data.table
   if (!is.data.table(data)) data <- data.table(data)
@@ -115,5 +116,6 @@ create_report <- function(data,
   ))
   ## Open report
   report_path <- path.expand(file.path(output_dir, output_file))
-  browseURL(report_path)
+  if (browse) browseURL(report_path)
+  return (report_path)
 }
