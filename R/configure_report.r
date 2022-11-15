@@ -70,6 +70,10 @@ configure_report <- function(
   ## Parse formal arguments
   input_args <- as.list(match.call())
   self_name <- input_args[[1]]
+  # remove package name if present
+  if (length(grep("::", self_name, fixed = TRUE)) > 0) {
+    self_name <- strsplit(as.character(self_name), "::")[[1]][2]
+  }
   formal_args <- formals(match.fun(self_name))
   switches <- grep("add_", names(formal_args), value = TRUE, fixed = TRUE)
   global_settings <- grep("global_", names(formal_args), value = TRUE, fixed = TRUE)
