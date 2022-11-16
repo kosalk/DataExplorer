@@ -69,12 +69,20 @@ configure_report <- function(
 ) {
   ## Parse formal arguments
   input_args <- as.list(match.call())
-  self_name <- input_args[[1]]
-  # remove package name if present
+  self_name <- input_args[[1]] # type 'symbol' if no package is given
+  # deal with package name if present
   if (length(grep("::", self_name, fixed = TRUE)) > 0) {
-    self_name <- strsplit(as.character(self_name), "::")[[1]][2]
+    # in this case, self_name is of type 'language'
+	  parts <- as.character(self_name)
+	  package <- parts[2]
+	  func <- parts[3]
+	  attached <- paste0("package:", package) %in% search()
+	  if (!attached) attachNamespace(package)
+	  formal_args <- formals(match.fun(func))
+	  if (!attached) detach()
+  } else {
+	  formal_args <- formals(match.fun(self_name))
   }
-  formal_args <- formals(match.fun(self_name))
   switches <- grep("add_", names(formal_args), value = TRUE, fixed = TRUE)
   global_settings <- grep("global_", names(formal_args), value = TRUE, fixed = TRUE)
   global_exceptions <- c("add_introduce", "add_plot_str")
